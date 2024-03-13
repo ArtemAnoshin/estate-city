@@ -10,9 +10,15 @@ require_once __DIR__ . '/taxonomy.php';
 /**
  * Регистрируем таксономию для недвижимости - тип недвижимости
  */
-add_action( 'init', 'estate_x__create_taxonomy' );
+if (function_exists('estate_x__create_taxonomy')) {
+    add_action( 'init', 'estate_x__create_taxonomy' );
+}
+
 
 /**
  * Регистрируем тип поста Недвижимость / estate 
  */ 
-add_action( 'init', 'estate_x__register_post_types' );
+if (function_exists('estate_x__register_post_types')) {
+    add_action( 'init', 'estate_x__register_post_types' );
+}
+
