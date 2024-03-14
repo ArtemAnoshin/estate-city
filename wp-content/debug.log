@@ -1,0 +1,2 @@
+[14-Mar-2024 04:35:53 UTC] PHP Warning:  Undefined variable $item in C:\OSPanel\domains\x-partners.test\wp-content\themes\understrap-child\single-estate.php on line 43
+[14-Mar-2024 04:35:53 UTC] PHP Warning:  Attempt to read property "post_parent" on null in C:\OSPanel\domains\x-partners.test\wp-content\themes\understrap-child\single-estate.php on line 43
