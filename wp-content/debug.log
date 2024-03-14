@@ -1,2 +1,3 @@
 [14-Mar-2024 04:35:53 UTC] PHP Warning:  Undefined variable $item in C:\OSPanel\domains\x-partners.test\wp-content\themes\understrap-child\single-estate.php on line 43
 [14-Mar-2024 04:35:53 UTC] PHP Warning:  Attempt to read property "post_parent" on null in C:\OSPanel\domains\x-partners.test\wp-content\themes\understrap-child\single-estate.php on line 43
+[14-Mar-2024 10:34:49 UTC] PHP Deprecated:  Функция wp_update_https_detection_errors с версии 6.4.0 считается устаревшей. Альтернативы не предусмотрено. in C:\OSPanel\domains\x-partners.test\wp-includes\functions.php on line 6031

@@ -12,6 +12,11 @@ $estates = get_posts([
 	'order'     => 'DESC',
 ]);
 
+$types = $terms = get_terms( [
+	'taxonomy' => 'estate_type',
+	'hide_empty' => false,
+] );
+
 $cities = get_posts([
     'post_type' => 'city',
     'posts_per_page' => -1,
@@ -161,6 +166,15 @@ $cities = get_posts([
         <div class="form-group mb-5">
             <label for="estateFloor">Этаж</label>
             <input type="number" class="form-control" id="estateFloor" name="estate_floor" require>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateType">Тип</label>
+            <select name="estate_type" id="estateType">
+                <?php foreach($types as $type) : ?>
+                    <option value="<?= $type->term_id; ?>"><?= $type->name; ?></option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <div class="form-group mb-2">

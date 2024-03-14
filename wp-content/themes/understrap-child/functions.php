@@ -188,6 +188,13 @@ function estate_x__new_estate_ajax_action_callback() {
 		$estate_floor = sanitize_text_field( $_POST['estate_floor'] );
 	}
 
+	// Тип
+	if ( empty( $_POST['estate_type'] ) || !isset( $_POST['estate_type'] ) ) {
+		$errors['estate_type'] = 'Обязательное поле.';
+	} else {
+		$estate_type = sanitize_text_field( $_POST['estate_type'] );
+	}
+
 	// Город
 	if ( empty( $_POST['estate_city'] ) || !isset( $_POST['estate_city'] ) ) {
 		$errors['estate_city'] = 'Обязательное поле.';
@@ -197,23 +204,31 @@ function estate_x__new_estate_ajax_action_callback() {
 
 	// Проверяем массив ошибок, если не пустой, то передаем сообщение. Иначе отправляем письмо
 	if ( $errors ) {
-
 		wp_send_json_error( $errors );
-
 	} else {
-
 		// Создаем массив
 		$post_data = array(
 			'post_title'    => $estate_name,
 			'post_content'  => $estate_description,
 			'post_status'   => 'publish',
 			'post_author'   => 1,
-			'post_category' => array(8,39)
+			'post_type'     => 'estate',
+			'post_parent'   => $estate_city,
+			'meta_input'    => [
+				'_estate_x__square' => $estate_square,
+				'_estate_x__cost' => $estate_cost,
+				'_estate_x__address' => $estate_address,
+				'_estate_x__living_area' => $estate_living_area,
+				'_estate_x__floor' => $estate_floor,
+			],
+			'tax_input'     => [
+				'estate_type' => [$estate_type]
+			], 
 		);
 
-// Вставляем данные в БД
-$post_id = wp_insert_post( wp_slash($post_data) );
-		
+		// Вставляем данные в БД
+		wp_insert_post( wp_slash($post_data) );
+
 		// Отправляем сообщение об успешной отправке
 		$message_success = 'Добавлена новая недвижимость.';
 		wp_send_json_success( $message_success );
