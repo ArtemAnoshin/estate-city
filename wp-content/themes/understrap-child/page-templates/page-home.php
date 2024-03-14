@@ -123,5 +123,61 @@ $cities = get_posts([
     </div>
 </section>
 
+<!-- Форма добавления недвижимости -->
+<div class="container">
+    <h2>Добавьте свою недвижимость</h2>
+
+    <form id="new-estate-form">
+        <div class="form-group mb-2">
+            <label for="estateName">Наименование</label>
+            <input type="text" class="form-control" id="estateName" name="estate_name" require>
+        </div>
+        
+        <div class="form-group mb-2">
+            <label for="estateDescription">Описание</label>
+            <textarea class="form-control" id="estateDescription" name="estate_description"></textarea>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateSquare">Площадь</label>
+            <input type="number" class="form-control" id="estateSquare" name="estate_square" require>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateCost">Стоимость</label>
+            <input type="number" class="form-control" id="estateCost" name="estate_cost" require>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateAddress">Адрес</label>
+            <input type="text" class="form-control" id="estateAddress" name="estate_address" require>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateLivingArea">Жилая площадь</label>
+            <input type="number" class="form-control" id="estateLivingArea" name="estate_living_area" require>
+        </div>
+
+        <div class="form-group mb-5">
+            <label for="estateFloor">Этаж</label>
+            <input type="number" class="form-control" id="estateFloor" name="estate_floor" require>
+        </div>
+
+        <div class="form-group mb-2">
+            <label for="estateCity">Город</label>
+            <select name="estate_city" id="estateCity">
+                <?php foreach($cities as $item) : ?>
+                    <option value="<?= $item->ID; ?>"><?= $item->post_title; ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <input type="checkbox" name="form_anticheck" id="form_anticheck" class="form_anticheck" style="display: none !important;" value="true" checked="checked"/>
+	    <input type="text" name="form_submitted" id="form_submitted" value="" style="display: none !important;"/>
+
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+
 <?php
 get_footer();

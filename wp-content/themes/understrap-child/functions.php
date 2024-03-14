@@ -108,3 +108,116 @@ function understrap_child_customize_controls_js() {
 	);
 }
 add_action( 'customize_controls_enqueue_scripts', 'understrap_child_customize_controls_js' );
+
+// Обработка формы добавления новой недвижимости на фронтенде
+add_action( 'wp_enqueue_scripts', 'estate_x__new_estate_ajax_form' );
+
+function estate_x__new_estate_ajax_form() {
+	wp_enqueue_script( 'jquery-form' );
+
+	wp_enqueue_script( 'new-estate-ajax-form', get_theme_file_uri( '/js/ajax-form.js' ), array('jquery'), 1.0, true );
+	wp_localize_script( 'new-estate-ajax-form', 'new_estate_ajax_form', array(
+		'url'   => admin_url( 'admin-ajax.php' ),
+		'nonce' => wp_create_nonce( 'new-estate-ajax-form-nonce' ),
+	) );
+}
+
+add_action( 'wp_ajax_new_estate_ajax_form_action', 'estate_x__new_estate_ajax_action_callback' );
+add_action( 'wp_ajax_nopriv_new_estate_ajax_form_action', 'estate_x__new_estate_ajax_action_callback' );
+
+function estate_x__new_estate_ajax_action_callback() {
+
+	// Массив ошибок
+	$errors = [];
+
+	// Если не прошла проверка nonce, то блокируем отправку
+	if ( !wp_verify_nonce( $_POST['nonce'], 'new-estate-ajax-form-nonce' ) ) {
+		wp_die( 'Данные отправлены с некорректного адреса' );
+	}
+
+	// Проверяем на спам. Если скрытое поле заполнено или снят чек, то блокируем отправку
+	if ( $_POST['form_anticheck'] === false || !empty( $_POST['form_submitted'] ) ) {
+		wp_die( 'Ты кто такой, давай, до свидания!' );
+	}
+
+	// Наименование
+	if ( empty( $_POST['estate_name'] ) || !isset( $_POST['estate_name'] ) ) {
+		$errors['estate_name'] = 'Обязательное поле.';
+	} else {
+		$estate_name = sanitize_text_field( $_POST['estate_name'] );
+	}
+
+	// Описание
+	$estate_description = '';
+	if ( ! empty( $_POST['estate_description'] ) ) {
+		$estate_description = sanitize_text_field( $_POST['estate_description'] );
+	}
+
+	// Площадь
+	if ( empty( $_POST['estate_square'] ) || !isset( $_POST['estate_square'] ) ) {
+		$errors['estate_square'] = 'Обязательное поле.';
+	} else {
+		$estate_square = sanitize_text_field( $_POST['estate_square'] );
+	}
+
+	// Стоимость
+	if ( empty( $_POST['estate_cost'] ) || !isset( $_POST['estate_cost'] ) ) {
+		$errors['estate_cost'] = 'Обязательное поле.';
+	} else {
+		$estate_cost = sanitize_text_field( $_POST['estate_cost'] );
+	}
+
+	// Адрес
+	if ( empty( $_POST['estate_address'] ) || !isset( $_POST['estate_address'] ) ) {
+		$errors['estate_address'] = 'Обязательное поле.';
+	} else {
+		$estate_address = sanitize_text_field( $_POST['estate_address'] );
+	}
+
+	// Жилая площадь
+	if ( empty( $_POST['estate_living_area'] ) || !isset( $_POST['estate_living_area'] ) ) {
+		$errors['estate_living_area'] = 'Обязательное поле.';
+	} else {
+		$estate_living_area = sanitize_text_field( $_POST['estate_living_area'] );
+	}
+
+	// Этаж
+	if ( empty( $_POST['estate_floor'] ) || !isset( $_POST['estate_floor'] ) ) {
+		$errors['estate_floor'] = 'Обязательное поле.';
+	} else {
+		$estate_floor = sanitize_text_field( $_POST['estate_floor'] );
+	}
+
+	// Город
+	if ( empty( $_POST['estate_city'] ) || !isset( $_POST['estate_city'] ) ) {
+		$errors['estate_city'] = 'Обязательное поле.';
+	} else {
+		$estate_city = sanitize_text_field( $_POST['estate_city'] );
+	}
+
+	// Проверяем массив ошибок, если не пустой, то передаем сообщение. Иначе отправляем письмо
+	if ( $errors ) {
+
+		wp_send_json_error( $errors );
+
+	} else {
+
+		// Создаем массив
+		$post_data = array(
+			'post_title'    => $estate_name,
+			'post_content'  => $estate_description,
+			'post_status'   => 'publish',
+			'post_author'   => 1,
+			'post_category' => array(8,39)
+		);
+
+// Вставляем данные в БД
+$post_id = wp_insert_post( wp_slash($post_data) );
+		
+		// Отправляем сообщение об успешной отправке
+		$message_success = 'Добавлена новая недвижимость.';
+		wp_send_json_success( $message_success );
+	}
+
+	wp_die();
+}
